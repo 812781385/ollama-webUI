@@ -1,0 +1,68 @@
+.markdown-body {
+	background-color: transparent;
+	font-size: 14px;
+
+  img {
+    width: 90px;
+    height: 150px;
+    border: 1px solid #ccc;
+  }
+
+	p {
+		white-space: pre-wrap;
+	}
+
+	ol {
+		list-style-type: decimal;
+	}
+
+	ul {
+		list-style-type: disc;
+	}
+
+	pre code,
+	pre tt {
+		line-height: 1.65;
+	}
+
+	.highlight pre,
+	pre {
+		background-color: #fff;
+	}
+
+	code.hljs {
+		padding: 0;
+	}
+
+  .code-block-wrapper {
+    position: relative;
+    padding-top: 24px;
+    // background-color: #f5f7f9!important;
+    // background-color: var(--vt-c-divider-light-1);
+    border: none;
+    box-shadow: none;
+  }
+
+  .code-block-header {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    width: 100%;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: #b3b3b3;
+    font-size: 12px;
+    // color: red;
+
+    .code-block-header__copy{
+      cursor: pointer;
+      margin-left: 0.5rem;
+      user-select: none;
+      &:hover {
+        color: #409EFF;
+      }
+    }
+  }
+}
