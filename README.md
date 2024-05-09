@@ -26,9 +26,13 @@
 - 关闭服务： `command + C`，(如果你是linux使用`service ollama stop`)
 - 后台启用：`nohup ollama serve > log.txt 2>&1 &`
 
-## 安装chroma（如果你需要使用RAG请安装chroma数据库，参见 https://docs.trychroma.com/getting-started）
+## 安装chroma
+- 如果你要使用RAG，请先安装chroma数据库，参见 https://docs.trychroma.com/getting-started
 -  `chroma run // 启动数据库服务` 
 
+图片展示
+<img src="https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama1.png" width="80%" height="10px" atl="图片描述" />
+<img src="https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama1.jpg" width="80%" height="10px" atl="图片描述" />
 
 视频演示
 [![Watch the video](https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama-webUI.mp4)](https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama-webUI.mp4)
