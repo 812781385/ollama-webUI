@@ -30,6 +30,7 @@
 - 如果你要使用RAG，请先安装chroma数据库，参见 https://docs.trychroma.com/getting-started
 -  `chroma run // 启动数据库服务` 
 
+### 演示
 图片展示
 <img src="https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama1.png" width="500" height="300px" atl="图片描述" />
 <img src="https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama1.jpg" width="500" height="300px" atl="图片描述" />
