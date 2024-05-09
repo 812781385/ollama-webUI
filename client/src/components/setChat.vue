@@ -31,7 +31,7 @@ const deleteLoading = ref(false)
 const deleteModelName = ref('')
 const pullProgress = ref(0)
 const dialogVisible = ref(false)
-const formUserInfo = reactive({
+const formUserInfo: any = reactive({
   name: '',
   avtar: '',
   logo: '',
@@ -39,11 +39,12 @@ const formUserInfo = reactive({
   language: '简体中文',
   Topic: 'dark'
 })
-const formChatAiConfig = reactive({
+const formChatAiConfig: any = reactive({
   model: '',
   rag: '0',
   system: '',
-  chromadb: ''
+  chromadb: '',
+  ragList: ''
 })
 
 function handleCance() {
@@ -120,6 +121,7 @@ function handleClearChat() {
 }
 
 function init() {
+  console.log('init')
   for (const key in userInfo.value) {
     formUserInfo[key] = userInfo.value[key]
   }

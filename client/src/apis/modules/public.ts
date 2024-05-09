@@ -34,9 +34,25 @@ function deleteModel(name: string): Promise<{ num: number }> {
   return ajax.post('/delete', { name })
 }
 
+/**
+ * 向chroma添加数据
+ */
+function addData(dataList: string[]): Promise<{ num: number }> {
+  return ajax.post('/addData', { dataList })
+}
+
+/**
+ * 删除数据
+ */
+function deleteCollection(): Promise<{ num: number }> {
+  return ajax.post('/deleteCollection')
+}
+
 export default {
   postChat,
   getTags,
   pullModel,
-  deleteModel
+  deleteModel,
+  addData,
+  deleteCollection
 }
