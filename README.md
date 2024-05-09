@@ -31,9 +31,10 @@
 -  `chroma run // 启动数据库服务` 
 
 ### 演示
-图片展示
+- 图片展示
+<br>
 <img src="https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama1.png" width="500" height="300px" atl="图片描述" />
 <img src="https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama1.jpg" width="500" height="300px" atl="图片描述" />
 
-视频演示
+- 视频演示
 [![Watch the video](https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama-webUI.mp4)](https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama-webUI.mp4)
