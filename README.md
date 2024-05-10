@@ -37,4 +37,4 @@
 <img src="https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama1.jpg" width="500" height="300px" atl="图片描述" />
 
 - 视频演示
-[![Watch the video](https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama-webUI.mp4)](https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama-webUI.mp4)
+[![Watch the video](https://b23.tv/XNK0Sth)](https://b23.tv/XNK0Sth)
