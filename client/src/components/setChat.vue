@@ -31,20 +31,20 @@ const deleteLoading = ref(false)
 const deleteModelName = ref('')
 const pullProgress = ref(0)
 const dialogVisible = ref(false)
-const formUserInfo: any = reactive({
+const formUserInfo = reactive({
   name: '',
   avtar: '',
+  aiAvtar: '',
   logo: '',
   logoName: '',
   language: '简体中文',
   Topic: 'dark'
 })
-const formChatAiConfig: any = reactive({
+const formChatAiConfig = reactive({
   model: '',
   rag: '0',
   system: '',
-  chromadb: '',
-  ragList: ''
+  chromadb: ''
 })
 
 function handleCance() {
@@ -121,7 +121,6 @@ function handleClearChat() {
 }
 
 function init() {
-  console.log('init')
   for (const key in userInfo.value) {
     formUserInfo[key] = userInfo.value[key]
   }
@@ -154,20 +153,24 @@ watch(() => props.modelValue, (state) => {
         </template>
         <div class="content">
           <div class="row">
-            <span class="row-label">名称</span>
-            <el-input v-model="formUserInfo.name" class="row-input" placeholder="你的名称" clearable />
+            <span class="row-label">应用名称</span>
+            <el-input v-model="formUserInfo.logo" class="row-input" placeholder="图片地址或文字" clearable />
           </div>
           <div class="row">
-            <span class="row-label">头像链接</span>
-            <el-input v-model="formUserInfo.avtar" class="row-input" placeholder="你的头像地址" clearable />
+            <span class="row-label">应用头像</span>
+            <el-input v-model="formUserInfo.aiAvtar" class="row-input" placeholder="AI应用头像地址" clearable />
           </div>
           <div class="row">
             <span class="row-label">应用描述</span>
             <el-input v-model="formUserInfo.logoName" class="row-input" placeholder="应用名称" clearable />
           </div>
           <div class="row">
-            <span class="row-label">应用名称</span>
-            <el-input v-model="formUserInfo.logo" class="row-input" placeholder="logo图片地址" clearable />
+            <span class="row-label">用户名称</span>
+            <el-input v-model="formUserInfo.name" class="row-input" placeholder="你的名称" clearable />
+          </div>
+          <div class="row">
+            <span class="row-label">用户头像</span>
+            <el-input v-model="formUserInfo.avtar" class="row-input" placeholder="你的头像地址" clearable />
           </div>
           <div class="row">
             <span class="row-label">清空聊天记录</span>

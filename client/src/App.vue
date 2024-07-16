@@ -40,6 +40,10 @@ async function init() {
     userInfoStore.updateUserInfo(userInfoDefault)
     userInfoStore.updateChatAiConfig({ ...chatAiConfigDefault, model: tages.value[0].name })
   }
+
+  if (userInfoStore.getChatList.length < 1) {
+    handleAddChat()
+  }
 }
 
 function handleAddChat() {

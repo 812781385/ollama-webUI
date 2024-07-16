@@ -8,7 +8,6 @@ import mdKatex from '@traptitech/markdown-it-katex'
 import { marked } from 'marked'
 import { copyText } from '../utils/util'
 import { useUserInfoStore } from '@/store'
-import aiImg from '@/assets/ai.png'
 import { publicApi } from '@/apis/index'
 
 interface ChatITem {
@@ -50,6 +49,7 @@ mdi.use(mdKatex, { blockClass: 'katexmath-block rounded-md p-[10px]', errorColor
 const inputValue = ref('')
 
 function highlightBlock(str: string, lang?: string) {
+  // return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">copyCode</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
   return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
 }
 
@@ -64,14 +64,23 @@ function onDownloadProgress(event: any) {
   const xhr = event.target
   const { responseText } = xhr
   const test = responseText.split('\n')
-
   let id = 0
   let text = ''
+
   test.forEach((item: any) => {
     if (item.length) {
       const itemObj = JSON.parse(item)
       id = itemObj.id
-      text += itemObj.text
+      // text += itemObj.text
+      // text = itemObj.text
+
+      // python服务端启用了qwen-agent的functioncall，它的底层是全量返回所以直接覆盖
+      const baseURL = import.meta.env.VITE_APP_AXIOS_BASE_URL
+      if (baseURL.indexOf('7010') !== -1) {
+        text = itemObj.text
+      } else {
+        text += itemObj.text
+      }
     }
   })
 
@@ -115,8 +124,41 @@ async function handlerSubmit(e?: any) {
     rag,
     messages: params
   }
-  await publicApi.postChat(apiParams, onDownloadProgress)
+
+  // params.slice(0, params.length).forEach
+
+  console.log('请求参数：', params)
+  const res = await publicApi.postChat(apiParams, onDownloadProgress)
   loading.value = false
+
+  const test = res.split('\n')
+
+  const lastPart = test[test.length - 2]
+
+  console.log(lastPart)
+  if (lastPart.length > 10) {
+    const lastPartObj = JSON.parse(lastPart)
+    console.log(lastPartObj)
+
+    if (lastPartObj.function_call) {
+      const chatItem = userInfoStore.getChatList.filter((item: ChatITem) => item.id === userInfoStore.getActiveChat)[0]
+      const index = chatItem.messages.length - 1
+
+      const functionPromt = {
+        role: 'function',
+        name: lastPartObj.function_call.function_call.name,
+        content: lastPartObj.function_response
+      }
+
+      chatItem.messages.splice(index, 0, functionPromt)
+
+      chatItem.messages.splice(index, 0, lastPartObj.function_call)
+      // messageList.value.splice(index, 0, functionPromt)
+      userInfoStore.updateChatList(chatItem)
+    }
+  }
+
+  console.log(userInfoStore.getChatList.filter((item: ChatITem) => item.id === userInfoStore.getActiveChat)[0])
 }
 
 function hancleCopy(idName: string) {
@@ -154,11 +196,11 @@ watch(() => messageList.value, () => {
   <main class="home-page">
     <div v-loading="loadingChat" class="wrapper-home-page">
       <ul ref="listRef" class="content">
-        <li v-for="(item, index) in messageList" :key="index" :class="`is-${item.role}`">
+        <li v-for="(item, index) in messageList" :key="index" :class="[{ 'is-empty': item.hasOwnProperty('function_call') || item.role === 'function' }, `is-${item.role}`]">
           <div class="wrapper">
             <template v-if="item.role !== 'user'">
               <div class="user">
-                <img :src="aiImg" alt="ai">
+                <img :src="userInfo.aiAvtar" alt="ai">
               </div>
               <div :id="`assistant-answer${index}`" class="answer markdown-body" v-html="mdi.render(item.content)" />
               <div v-if="!loading || (index !== messageList.length - 1)" class="set-more">
@@ -370,6 +412,9 @@ watch(() => messageList.value, () => {
         margin-left: 10px;
       }
     }
+  }
+  .is-empty {
+    display: none;
   }
 }
 

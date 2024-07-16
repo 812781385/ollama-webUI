@@ -7,6 +7,7 @@
 3. 主题切换：暗黑/明亮主题切换，适配PC与移动端。
 4. 界面信息修改：可修改界面信息如：logo、用户头像名称等
 5. RAG配置：可配置向量数据库或提示模版
+6. functioncall：又叫做工具调用，类似于openAI的functioncalling，使用qwen-agent模块，最好使用qwen32b及更大模型使用（目前只有python版本支持，nodejs可自行编码）
  
 ## 安装cliet
 - `git clone https://github.com/812781385/ollama-webUI.git`
@@ -15,10 +16,17 @@
 - `npm run dev`
 - `修改.env 里的VITE_APP_AXIOS_BASE_URL 为自己的ip地址`
 
-## 安装serve
+## serve有两个版本可以自己选择
+
+## 1.安装nodejs版本serve
 - `cd serve`
 - `npm i   // 需要安装egg-init`
 - `npm run dev`
+
+## 2.安装python版本serve
+- `cd python-serve`
+- `pip install xxx // 安装所需依赖`
+- `python app.py`
 
 ## 安装ollama
 - 访问官网地址：`https://ollama.com/download`，选择适合自己系统。（如果你是linux，安装过程可能很慢。先更新curl）

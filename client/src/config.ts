@@ -1,6 +1,7 @@
 const userInfoDefault = {
   name: '小虎',
-  avtar: 'https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/mmexport1711704584738.jpg',
+  avtar: 'https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/111.png',
+  aiAvtar: 'https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/mmexport1711704584738.jpg',
   logo: 'ollama',
   logoName: 'chatAi',
   language: '简体中文',
