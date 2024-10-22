@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, nextTick, onMounted, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Delete, DocumentCopy, MoreFilled } from '@element-plus/icons-vue'
+import { Delete, DocumentCopy, MoreFilled, Promotion } from '@element-plus/icons-vue'
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 import mdKatex from '@traptitech/markdown-it-katex'
@@ -29,23 +29,26 @@ const messageList = computed(() => {
   const chatItem = userInfoStore.getChatList.filter((item: ChatITem) => item.id === userInfoStore.getActiveChat)[0]
   return chatItem?.messages || []
 })
-
+const inputWrapper = ref();
+// 获取实际的 textarea 元素
+let textareaElement: HTMLTextAreaElement | null = null;
 const loading = ref(false)
 const loadingChat = ref(true)
 const listRef: any = ref(null)
 
 const mdi = new MarkdownIt({
   linkify: true,
-  highlight(code: any, language: any) {
+  highlight(code: string, language: string) {
     const validLang = !!(language && hljs.getLanguage(language))
     if (validLang) {
-      const lang = language ?? ''
+      const lang = language || ''
       return highlightBlock(hljs.highlight(lang, code, true).value, lang)
     }
     return highlightBlock(hljs.highlightAuto(code).value, '')
   }
 })
 mdi.use(mdKatex, { blockClass: 'katexmath-block rounded-md p-[10px]', errorColor: ' #cc0000' })
+
 const inputValue = ref('')
 
 function highlightBlock(str: string, lang?: string) {
@@ -91,7 +94,31 @@ function onDownloadProgress(event: any) {
   userInfoStore.updateChatList(chatItem)
 }
 
+// 处理 Shift + Enter 键按下事件
+function handleShiftEnter(event: KeyboardEvent) {
+  // 阻止默认的换行操作
+  event.preventDefault();
+  if (!textareaElement) return;
+
+  const start = textareaElement.selectionStart;
+  const end = textareaElement.selectionEnd;
+  if (start === null || end === null) return;
+
+  // 插入换行符
+  inputValue.value = [
+    inputValue.value.slice(0, start),
+    '\n\n',
+    inputValue.value.slice(end)
+  ].join('');
+
+  // 更新光标位置
+  textareaElement.setSelectionRange(start + 1, start + 1);
+}
+
 async function handlerSubmit(e?: any) {
+  // 阻止默认的换行操作
+  e.preventDefault();
+
   if (e && e.type !== 'click' && (e.keyCode !== 13 || e.isComposing)) {
     return
   }
@@ -108,6 +135,9 @@ async function handlerSubmit(e?: any) {
   }
 
   const chatItem = userInfoStore.getChatList.filter((item: ChatITem) => item.id === userInfoStore.getActiveChat)[0]
+  if (chatItem.messages.length < 2) {
+    chatItem.name = inputValue.value.slice(0, 10)
+  }
   chatItem.messages.push({ role: 'user', content: inputValue.value })
   chatItem.messages.push({ role: 'assistant', content: '正在输入...' })
   userInfoStore.updateChatList(chatItem)
@@ -181,6 +211,11 @@ onMounted(async () => {
   nextTick(() => {
     scrollToBottom()
   })
+
+  if (inputWrapper.value && inputWrapper.value.$el) {
+    textareaElement = inputWrapper.value.$el.querySelector('textarea');
+  }
+  console.log(messageList)
 })
 
 watch(() => messageList.value, () => {
@@ -255,9 +290,10 @@ watch(() => messageList.value, () => {
                   </div>
                 </el-popover>
               </div>
-              <div :id="`user-answer${index}`" class="answer">
+              <div :id="`user-answer${index}`" class="answer" v-html="mdi.render(item.content)" />
+              <!-- <div :id="`user-answer${index}`" class="answer">
                 {{ item.content }}
-              </div>
+              </div> -->
               <div class="user">
                 <img :src="userInfo.avtar" alt="">
               </div>
@@ -268,15 +304,26 @@ watch(() => messageList.value, () => {
 
       <div class="input-wi">
         <el-input
-          v-model="inputValue" :rows="1" class="input" type="input" placeholder="有问题尽管问我..."
-          @keydown.enter="handlerSubmit"
+          ref="inputWrapper"
+          v-model="inputValue"
+          class="input"
+          :autosize="{ minRows: 2, maxRows: 3 }"
+          type="textarea"
+          placeholder="有问题尽管问我，Shift+Enter换行"
+          @keydown.enter.prevent="handlerSubmit"
+          @keydown.shift.enter="handleShiftEnter"
         />
-        &emsp;
+        <!-- &emsp; -->
         <el-button
-          :loading="loading" :disabled="inputValue.length < 1" type="primary"
+          :loading="loading"
+          :disabled="inputValue.length < 1"
+          type="primary"
+          class="input-wi-btn"
+          :icon="Promotion"
+          size="large"
+          circle
           @click="handlerSubmit"
         >
-          发送
         </el-button>
       </div>
     </div>
@@ -425,9 +472,17 @@ watch(() => messageList.value, () => {
   justify-content: space-between;
   padding-left: 10px;
   padding-right: 10px;
+  position: relative;
+  // border: 1px solid red;
 
   .input {
-    width: 95%;
+    width: 100%;
+  }
+  .input-wi-btn {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 
