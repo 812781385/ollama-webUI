@@ -47,3 +47,7 @@
 
 - 视频演示
 [![Watch the video](https://b23.tv/XNK0Sth)](https://b23.tv/XNK0Sth)
+
+## 历史更新
+- 2024-10-22 优化输入的mkdown显示，和输入框样式
+- 2024-7-20 添加python版本服务，支持functioncall工具调用
