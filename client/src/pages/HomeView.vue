@@ -107,7 +107,7 @@ function handleShiftEnter(event: KeyboardEvent) {
   // 插入换行符
   inputValue.value = [
     inputValue.value.slice(0, start),
-    '\n\n',
+    '\n',
     inputValue.value.slice(end)
   ].join('');
 
@@ -138,7 +138,7 @@ async function handlerSubmit(e?: any) {
   if (chatItem.messages.length < 2) {
     chatItem.name = inputValue.value.slice(0, 10)
   }
-  chatItem.messages.push({ role: 'user', content: inputValue.value })
+  chatItem.messages.push({ role: 'user', content: inputValue.value.replace(/(\n)/g, '\n\n') })
   chatItem.messages.push({ role: 'assistant', content: '正在输入...' })
   userInfoStore.updateChatList(chatItem)
 

@@ -10,7 +10,7 @@ const userInfoDefault = {
 const chatAiConfigDefault = {
   model: '',
   rag: '0',
-  system: '### 你好！有什么我可以帮助你的吗？\n 作为你的智能伙伴，我既能写文案、想点子，又能陪你聊天、答疑解惑。', // system提示词
+  system: '你好！作为你的智能伙伴，我既能写文案、想点子，又能陪你聊天、答疑解惑。请问有什么我可以帮助你的吗？', // system提示词
   chromadb: '',
   ragList: '我的名字叫小虎;我的家乡来自安徽的'
 }
