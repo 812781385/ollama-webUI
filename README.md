@@ -8,7 +8,6 @@
 4. 界面信息修改：可修改界面信息如：logo、用户头像名称等
 5. RAG配置：可配置向量数据库或提示模版
 6. functioncall：又叫做工具调用，类似于openAI的functioncalling，使用qwen-agent模块，最好使用qwen32b及更大模型使用（目前只有python版本支持，nodejs可自行编码）
-7. 添加免费的GPT-4o
  
 ## 安装client
 - `git clone https://github.com/812781385/ollama-webUI.git`
