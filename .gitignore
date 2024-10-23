@@ -2,5 +2,7 @@ node_modules
 .DS_Store
 dist
 dist-ssr
+__pycache__/
 *.local
 coverage
+my_venv/
