@@ -1,0 +1,4 @@
+from .speech_synthesizer import (ResultCallback, SpeechSynthesisResult,
+                                 SpeechSynthesizer)
+
+__all__ = [SpeechSynthesizer, ResultCallback, SpeechSynthesisResult]
