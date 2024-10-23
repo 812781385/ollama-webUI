@@ -1,6 +1,6 @@
 ## 使用免费的gpt-4o
 *说明：使用的是github提供的Azure OpenAI的服务，可以无限薅羊毛*
-- [地址](https://github.com/812781385/ollama-webUI.git)
+- [地址](https://github.com/marketplace/models/azure-openai/gpt-4o)
 - 进入后点击 右上角“Get API key”按钮
 - 点击“Get developer key”
 - 选择Beta版本“Generate new token”
