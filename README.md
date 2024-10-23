@@ -16,19 +16,22 @@
 - `cd ./client`
 - `pnpm i`
 - `npm run dev`
-- `修改.env 里的VITE_APP_AXIOS_BASE_URL 为自己的ip地址`
+- `修改.env 里的VITE_APP_AXIOS_BASE_URL 为自己的ip地址`（可选）
 
 ## 二、安装serve（有三个版本可以自己选择）
 
 ### 1.安装nodejs版本serve
-- `cd serve`
-- `npm i   // 需要安装egg-init`
-- `npm run dev`
+- 进入目录：`cd serve`
+- 安装所需依赖：`npm i   // 需要安装egg-init`
+- 启动：`npm run dev`
 
 ### 2.安装python版本serve
-- `cd python-serve`
-- `pip install xxx // 安装所需依赖`
-- `python app.py`
+- 进入目录：`cd python-serve`
+- 创建虚拟环境：`python3 -m venv my_venv`
+- 激活虚拟环境：`source my_venv/bin/activate`;windows使用`my_venv\Scripts\activate`
+- 安装所需依赖：`pip install -r requirements.txt`
+- 启动：`python app.py`
+- 退出虚拟环境：`deactivate`
 
 ## 3.安装python版本serve(免费GPT-4o版本)
 - `cd openAI-serve`
