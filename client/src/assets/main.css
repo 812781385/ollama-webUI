@@ -14,34 +14,34 @@ a,
   transition: 0.4s;
 }
 
-::-webkit-scrollbar { /* Chrome, Edge */
+::-webkit-scrollbar {
   width: 0;
 }
 
-::-webkit-scrollbar-thumb { /* Chrome, Edge */
-  background: transparent; /* or any other color you like */
+::-webkit-scrollbar-thumb {
+  background: transparent;
   border-radius: 10px;
 }
 
-::-webkit-scrollbar-track { /* Chrome, Edge */
-  background: rgba(0, 0, 0, 0.2); /* or any other color you like with opacity */
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 5px;
 }
 
-:-moz-scrollbar { /* Firefox */
+:-moz-scrollbar {
   width: 0;
 }
 
-:-moz-scrollbar-thumb { /* Firefox */
-  background: transparent; /* or any other color you like */
+:-moz-scrollbar-thumb {
+  background: transparent;
   border-radius: 10px;
 }
 
-:-ms-scrollbar { /* IE/Edge */
+:-ms-scrollbar {
   width: 0;
 }
 
-:-ms-scrollbar-thumb { /* IE/Edge */
-  background: transparent; /* or any other color you like */
+:-ms-scrollbar-thumb {
+  background: transparent;
   border-radius: 10px;
 }

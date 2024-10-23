@@ -30,14 +30,16 @@ const messageList = computed(() => {
   return chatItem?.messages || []
 })
 const inputWrapper = ref();
-// 获取实际的 textarea 元素
 let textareaElement: HTMLTextAreaElement | null = null;
 const loading = ref(false)
 const loadingChat = ref(true)
 const listRef: any = ref(null)
 
 const mdi = new MarkdownIt({
+  html: true,
   linkify: true,
+  typographer: true,
+  breaks: true,
   highlight(code: string, language: string) {
     const validLang = !!(language && hljs.getLanguage(language))
     if (validLang) {
@@ -79,12 +81,14 @@ function onDownloadProgress(event: any) {
 
       // python服务端启用了qwen-agent的functioncall，它的底层是全量返回所以直接覆盖
       const baseURL = import.meta.env.VITE_APP_AXIOS_BASE_URL
-      if (baseURL.indexOf('7010') !== -1) {
-        text = itemObj.text
-      } else {
-        text += itemObj.text
-      }
+      // if (baseURL.indexOf('7010') !== -1) {
+      //   text = itemObj.text
+      // } else {
+      //   text += itemObj.text
+      // }
+      text = itemObj.text
     }
+    
   })
 
   const assistantPromt = { role: 'assistant', content: text }
@@ -138,7 +142,7 @@ async function handlerSubmit(e?: any) {
   if (chatItem.messages.length < 2) {
     chatItem.name = inputValue.value.slice(0, 10)
   }
-  chatItem.messages.push({ role: 'user', content: inputValue.value.replace(/(\n)/g, '\n\n') })
+  chatItem.messages.push({ role: 'user', content: inputValue.value }) // .replace(/(\n)/g, '\n\n')
   chatItem.messages.push({ role: 'assistant', content: '正在输入...' })
   userInfoStore.updateChatList(chatItem)
 
@@ -157,7 +161,7 @@ async function handlerSubmit(e?: any) {
 
   // params.slice(0, params.length).forEach
 
-  console.log('请求参数：', params)
+  // console.log('请求参数：', params)
   const res = await publicApi.postChat(apiParams, onDownloadProgress)
   loading.value = false
 
@@ -165,10 +169,8 @@ async function handlerSubmit(e?: any) {
 
   const lastPart = test[test.length - 2]
 
-  console.log(lastPart)
   if (lastPart.length > 10) {
     const lastPartObj = JSON.parse(lastPart)
-    console.log(lastPartObj)
 
     if (lastPartObj.function_call) {
       const chatItem = userInfoStore.getChatList.filter((item: ChatITem) => item.id === userInfoStore.getActiveChat)[0]
@@ -188,7 +190,7 @@ async function handlerSubmit(e?: any) {
     }
   }
 
-  console.log(userInfoStore.getChatList.filter((item: ChatITem) => item.id === userInfoStore.getActiveChat)[0])
+  // console.log(userInfoStore.getChatList.filter((item: ChatITem) => item.id === userInfoStore.getActiveChat)[0])
 }
 
 function hancleCopy(idName: string) {
@@ -291,9 +293,6 @@ watch(() => messageList.value, () => {
                 </el-popover>
               </div>
               <div :id="`user-answer${index}`" class="answer" v-html="mdi.render(item.content)" />
-              <!-- <div :id="`user-answer${index}`" class="answer">
-                {{ item.content }}
-              </div> -->
               <div class="user">
                 <img :src="userInfo.avtar" alt="">
               </div>
@@ -313,7 +312,6 @@ watch(() => messageList.value, () => {
           @keydown.enter.prevent="handlerSubmit"
           @keydown.shift.enter="handleShiftEnter"
         />
-        <!-- &emsp; -->
         <el-button
           :loading="loading"
           :disabled="inputValue.length < 1"

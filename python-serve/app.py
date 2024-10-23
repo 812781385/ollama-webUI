@@ -4,6 +4,8 @@ from qwen_agent.llm import get_chat_model
 from toolsApi import get_ZSAM_info, get_weather
 from flask_cors import CORS
 from tqdm import tqdm
+import os
+from openai import OpenAI
 
 ollama_url = 'http://127.0.0.1:11434/v1'
 
@@ -136,14 +138,12 @@ def create_stream_chat():
 @app.route('/tags', methods=['POST'])
 def get_tags():
   response = ollama.list()
-  print(response)
   data = {
     'code': 0,
     'data': response['models']
   }
   return jsonify(data)
   
-    
 @app.route('/pull', methods=['POST'])
 def pull_model():
   request_data = request.get_json()
@@ -182,4 +182,4 @@ def delet_model():
   return jsonify(data)
 
 if __name__ == '__main__':
-  app.run(debug=True, host='0.0.0.0', port=7010)
+  app.run(debug=True, host='0.0.0.0', port=7001)

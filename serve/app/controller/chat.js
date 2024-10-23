@@ -105,12 +105,13 @@ class ChatController extends Controller {
     ctx.status = 200;
     ctx.flushHeaders();
 
+    let text = '';
     for await (const part of response) {
       if (part.done) {
         ctx.res.end();
         return;
       }
-      const text = part.message.content;
+      text += part.message.content;
       if (id) {
         ctx.res.write(JSON.stringify({ id, text }) + '\n');
       } else {
