@@ -7,3 +7,6 @@
 - 然后授权进入，“token name”随便取，例如：gpt4，然后点击最下面的“Generate token”按钮
 - 这时候会得到一个access token，复制到`./app.py的gtp4o_token变量中`
 - 启动服务`python app.py`
+
+### 图文教程如下：
+- https://blog.csdn.net/qq_40279232/article/details/143180635
