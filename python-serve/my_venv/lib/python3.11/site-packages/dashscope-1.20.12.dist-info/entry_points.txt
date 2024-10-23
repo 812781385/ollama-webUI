@@ -1,3 +1,0 @@
-[console_scripts]
-dashscope = dashscope.cli:main
-
