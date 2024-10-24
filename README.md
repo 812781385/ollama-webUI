@@ -34,9 +34,12 @@
 - 退出虚拟环境：`deactivate`
 
 ## 3.安装python版本serve(免费GPT-4o版本)
-- `cd openAI-serve`
-- `pip install xxx // 安装所需依赖`
-- `python app.py`
+- 进入目录：`cd python-serve`
+- 创建虚拟环境：`python3 -m venv my_venv`
+- 激活虚拟环境：`source my_venv/bin/activate`;windows使用`my_venv\Scripts\activate`
+- 安装所需依赖：`pip install -r requirements.txt`
+- 启动：`python app.py`
+- 退出虚拟环境：`deactivate`
 
 ## 三、安装ollama
 - 访问官网地址：`https://ollama.com/download`，选择适合自己系统。（如果你是linux，安装过程可能很慢。先更新curl）
