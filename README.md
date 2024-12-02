@@ -34,7 +34,7 @@
 - 启动：`python3 app.py`
 - 退出虚拟环境：`deactivate`
 
-## 3.安装python版本serve(免费GPT-4o版本)
+### 3.安装python版本serve(免费GPT-4o版本)
 - 进入目录：`cd openAI-serve`
 - 创建虚拟环境：`python3 -m venv my_venv`
 - 激活虚拟环境：`source my_venv/bin/activate`;windows使用`my_venv\Scripts\activate`
