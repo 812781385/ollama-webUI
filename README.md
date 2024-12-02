@@ -9,9 +9,9 @@
 5. RAG配置：可配置向量数据库或提示模版
 6. functioncall：又叫做工具调用，类似于openAI的functioncalling，使用qwen-agent模块，最好使用qwen32b及更大模型使用（目前只有python版本支持，nodejs可自行编码）
 7. 支持免费GPT-4o：接入了免费的GPT-4o，具体使用请看教程：[地址](https://github.com/812781385/ollama-webUI/tree/main/openAI-serve/README.md) 
-8. 图文推理：`llama3.2-vision`模型
+8. 图文推理：`llama3.2-vision`模型 （目前只有python版本支持，nodejs可自行编码）
  
-## -、安装client
+## 一、安装client
 - `git clone https://github.com/812781385/ollama-webUI.git`
 - `cd ./ollama-webUI`
 - `cd ./client`
