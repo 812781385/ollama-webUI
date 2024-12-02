@@ -9,6 +9,14 @@ from openai import OpenAI
 
 ollama_url = 'http://127.0.0.1:11434/v1'
 
+# 设置文件上传目录
+UPLOAD_FOLDER = '../client/public/uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+  os.makedirs(UPLOAD_FOLDER)
+
+# 允许上传的文件扩展名
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
 # 工具配置
 tools = [
   {
@@ -40,11 +48,72 @@ available_functions = {
   'get_weather': get_weather,
 }
 
+def allowed_file(filename):
+  return '.' in filename and \
+    filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 # 服务接口
 app = Flask(__name__)
 CORS(app)
 
+# 配置静态文件夹
+# 假设 client 公共目录相对于当前工作目录的位置是 ../client/public
+STATIC_URL_PATH = '/public'
+STATIC_FOLDER = '../client/public'
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if file and allowed_file(file.filename):
+        filename = file.filename
+        file_path = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(file_path)
+        
+        # 返回文件的相对路径
+        relative_path = os.path.join(UPLOAD_FOLDER, filename).replace("\\", "/")
+
+        return jsonify({
+            'message': 'File uploaded successfully',
+            'filename': filename,
+            'path': relative_path
+        }), 200
+
+    return jsonify({'error': 'File type not allowed'}), 400
+
 @app.route('/chat', methods=['POST'])
+def create_stream_chat2():
+  request_data = request.get_json()
+  messages = request_data.get('messages', [])
+  id = request_data.get('id', 0)
+  model = request_data.get('model', 'qwen:14b')
+
+  def generate(messages, id):
+    response = ollama.chat(
+      model=model,
+      messages=messages,
+      stream=True
+    )
+
+    res = { 'id': id, 'text': '' }
+    for res_stream in response:
+      print('结果： ',res_stream)
+      if res_stream.get('done') is False:
+        res['text'] += res_stream['message']['content']
+        yield json.dumps(res, ensure_ascii=False) + '\n'
+      else:
+        print("No content in delta")
+
+  generator = generate(messages, id)
+  return Response(generator, content_type='text/event-stream')
+
+@app.route('/chatx', methods=['POST'])
 def create_stream_chat():
   request_data = request.get_json()
   messages = request_data.get('messages', [])
@@ -64,6 +133,7 @@ def create_stream_chat():
   def generate(llm_client, messages, id):
     print('---------第一轮message列表.....')
     print(json.dumps(messages, indent=2, ensure_ascii=False))
+
     response = llm_client.chat(
       messages=messages,  
       functions=tools,
@@ -74,6 +144,7 @@ def create_stream_chat():
     pending_arguments = ""
     res_stream = []
     for res_stream in response:
+        print('结果：', res_stream)
         if 'function_call' in res_stream[0]:
           if pending_function_call is None:
             pending_function_call = res_stream[0]['function_call']['name']

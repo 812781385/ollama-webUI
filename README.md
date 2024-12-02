@@ -9,6 +9,7 @@
 5. RAG配置：可配置向量数据库或提示模版
 6. functioncall：又叫做工具调用，类似于openAI的functioncalling，使用qwen-agent模块，最好使用qwen32b及更大模型使用（目前只有python版本支持，nodejs可自行编码）
 7. 支持免费GPT-4o：接入了免费的GPT-4o，具体使用请看教程：[地址](https://github.com/812781385/ollama-webUI/tree/main/openAI-serve/README.md) 
+8. 图文推理：llama3.2-vision模型
  
 ## -、安装client
 - `git clone https://github.com/812781385/ollama-webUI.git`
@@ -34,7 +35,7 @@
 - 退出虚拟环境：`deactivate`
 
 ## 3.安装python版本serve(免费GPT-4o版本)
-- 进入目录：`cd python-serve`
+- 进入目录：`cd openAI-serve`
 - 创建虚拟环境：`python3 -m venv my_venv`
 - 激活虚拟环境：`source my_venv/bin/activate`;windows使用`my_venv\Scripts\activate`
 - 安装所需依赖：`pip install -r requirements.txt`
@@ -50,18 +51,20 @@
 
 ## 四、安装chroma（可选）
 - 如果你要使用RAG，请先安装chroma数据库，参见 https://docs.trychroma.com/getting-started
--  `chroma run // 启动数据库服务` 
+-  `chroma run // 启动数据库服务`
 
 ## 演示
 - 图片展示
 <br>
 <img src="https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama1.png" width="500" height="300px" atl="图片描述" />
 <img src="https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/ollama1.jpg" width="500" height="300px" atl="图片描述" />
+<img src="https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/mmexport1733119603983.png" width="340" height="750px" atl="图片描述" />
 
 - 视频演示
 [![Watch the video](https://b23.tv/XNK0Sth)](https://b23.tv/XNK0Sth)
 
 ## 历史更新
+- 2024-12-02 针对llama3.2-vision模型支持了图文推理
 - 2024-10-23 接入免费的GPT-4o
 - 2024-10-22 优化输入的mkdown显示，和输入框样式
 - 2024-7-20 添加python版本服务，支持functioncall工具调用

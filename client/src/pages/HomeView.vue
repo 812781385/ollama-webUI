@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, inject, nextTick, onMounted, ref, watch } from 'vue'
+import type { UploadProps } from 'element-plus'
 import { ElMessage } from 'element-plus'
+import { Plus } from '@element-plus/icons-vue'
 import { Delete, DocumentCopy, MoreFilled, Promotion } from '@element-plus/icons-vue'
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
@@ -9,6 +11,7 @@ import { marked } from 'marked'
 import { copyText } from '../utils/util'
 import { useUserInfoStore } from '@/store'
 import { publicApi } from '@/apis/index'
+import { set } from '@vueuse/core'
 
 interface ChatITem {
   id: number
@@ -17,6 +20,7 @@ interface ChatITem {
 }
 
 const handleAddChat: any = inject('handleAddChat')
+const baseURL = import.meta.env.VITE_APP_AXIOS_BASE_URL
 
 marked.setOptions({
   gfm: true,
@@ -34,6 +38,8 @@ let textareaElement: HTMLTextAreaElement | null = null;
 const loading = ref(false)
 const loadingChat = ref(true)
 const listRef: any = ref(null)
+const imageUrlPath = ref('')
+const currentImageUrlPath = computed(() => imageUrlPath ? imageUrlPath.value.split('../client')[1] : '')
 
 const mdi = new MarkdownIt({
   html: true,
@@ -61,7 +67,10 @@ function highlightBlock(str: string, lang?: string) {
 function scrollToBottom() {
   if (listRef.value) {
     const ulElement = listRef.value
-    ulElement.lastElementChild && ulElement.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    // console.log('--->>', ulElement)
+    setTimeout(() => {
+      ulElement.lastElementChild && ulElement.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    }, 500)
   }
 }
 
@@ -142,13 +151,20 @@ async function handlerSubmit(e?: any) {
   if (chatItem.messages.length < 2) {
     chatItem.name = inputValue.value.slice(0, 10)
   }
-  chatItem.messages.push({ role: 'user', content: inputValue.value }) // .replace(/(\n)/g, '\n\n')
+  if (imageUrlPath.value) {
+    chatItem.messages.push({ role: 'user', content: inputValue.value, images: [imageUrlPath.value] }) // .replace(/(\n)/g, '\n\n')
+    // chatItem.messages.push({ role: 'user', content: inputValue.value, images: ['/Users/wangrui/opt/py/111.jpg'] }) // .replace(/(\n)/g, '\n\n')
+    // chatItem.messages.push({ role: 'user', content: inputValue.value, images: ['https://my-mahjong.oss-cn-nanjing.aliyuncs.com/aiartImg/111.png'] }) // .replace(/(\n)/g, '\n\n')
+  } else {
+    chatItem.messages.push({ role: 'user', content: inputValue.value }) // .replace(/(\n)/g, '\n\n')
+  }
   chatItem.messages.push({ role: 'assistant', content: '正在输入...' })
   userInfoStore.updateChatList(chatItem)
 
   const params = JSON.parse(JSON.stringify(messageList.value))
   params.pop()
   inputValue.value = ''
+  imageUrlPath.value = ''
   const model = chatAiConfig.value.model
   const rag = chatAiConfig.value.rag
 
@@ -206,6 +222,25 @@ function handleDelete(index: number) {
   const chatItem = userInfoStore.getChatList.filter((item: ChatITem) => item.id === userInfoStore.getActiveChat)[0]
   chatItem.messages = chatItem.messages.slice(0, index).concat(chatItem.messages.slice(index + 1))
   userInfoStore.updateChatList(chatItem)
+}
+
+const handleAvatarSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
+  imageUrlPath.value = response.path
+}
+
+const getImagePath: any = (path: string) => {
+  return path.split('../client')[1]
+}
+
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+  if (rawFile.type !== 'image/jpeg') {
+    ElMessage.error('Avatar picture must be JPG format!')
+    return false
+  } else if (rawFile.size / 1024 / 1024 > 2) {
+    ElMessage.error('Avatar picture size can not exceed 2MB!')
+    return false
+  }
+  return true
 }
 
 onMounted(async () => {
@@ -266,7 +301,7 @@ watch(() => messageList.value, () => {
                 </el-popover>
               </div>
             </template>
-            <template v-else>
+            <div v-else class="user-row">
               <div class="set-more">
                 <el-popover
                   placement="left"
@@ -296,12 +331,24 @@ watch(() => messageList.value, () => {
               <div class="user">
                 <img :src="userInfo.avtar" alt="">
               </div>
-            </template>
+            </div>
+            <img v-if="item.images" class="img-question" :src="getImagePath(item.images[0])" alt="">
           </div>
         </li>
       </ul>
 
       <div class="input-wi">
+        <el-upload
+          v-if="chatAiConfig.model.indexOf('llama3.2-vision') !== -1"
+          class="avatar-uploader"
+          :action="baseURL + '/upload'"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
+        >
+          <img v-if="currentImageUrlPath" :src="currentImageUrlPath" class="avatar-uploader" />
+          <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+        </el-upload>
         <el-input
           ref="inputWrapper"
           v-model="inputValue"
@@ -435,13 +482,25 @@ watch(() => messageList.value, () => {
 
     .wrapper {
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
+      flex-direction: column;
+      align-items: flex-end;
+      .user-row {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+      }
       .answer {
         background-color: #a1dc95;
         background-color: var(--vt-c-divider-light-1);
         margin-right: 10px;
         color: var(--vt-c-text-dark-3);
       }
+    }
+    .img-question {
+      width: 320px;
+      border-radius: 8px;
+      overflow: hidden;
     }
   }
 
@@ -471,16 +530,38 @@ watch(() => messageList.value, () => {
   padding-left: 10px;
   padding-right: 10px;
   position: relative;
-  // border: 1px solid red;
+  position: relative;
 
   .input {
     width: 100%;
+    // border: 1px solid red;
+    padding-left: 10px;
   }
   .input-wi-btn {
     position: absolute;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
+  }
+  .avatar-uploader {
+    border: 1px solid var(--vt-c-divider-dark-1);
+    width: 52px;
+    height: 52px;
+    border-radius: 4px;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    // position: absolute;
+    // left: 5px;
+    // top: 50%;
+    // transform: translateY(-50%);
+    :deep().el-upload {
+      width: 100%;
+      height: 100%;
+    }
+    .avatar-uploader-icon {
+      font-size: 18px;
+    }
   }
 }
 
@@ -497,7 +578,15 @@ watch(() => messageList.value, () => {
           display: none;
         }
       }
+      .img-question {
+        width: 150px!important;
+        border-radius: 4px!important;
+        margin-right: 5px;
+      }
     }
+  }
+  .input-wi {
+    margin-top: 10px;
   }
 }
 </style>
